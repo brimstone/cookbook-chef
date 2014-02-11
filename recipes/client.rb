@@ -1,16 +1,26 @@
+# Some bits stolen from https://github.com/opscode-cookbooks/chef-client
 ## setup
 if Chef::Config[:solo]
-	server = node["boxes"]["chef"]
+	server = "https://" + node["boxes"]["chef"]["ip"]
 else
-	server = { 'ip' => search(:node, "name:chef.*").first["ipaddress"] }
+	server = Chef::Config[:chef_server_url]
+	#server = { 'ip' => search(:node, "name:chef.*").first["ipaddress"] }
 end
 
 ## directives
 
 directory "/etc/chef"
 
-execute "cp /vagrant/chef-validator.pem /etc/chef/" do
-	not_if { ::File.exists?("/etc/chef/chef-validator.pem") }
+if Chef::Config[:solo]
+	execute "cp /vagrant/chef-validator.pem /etc/chef/" do
+		not_if { ::File.exists?("/etc/chef/chef-validator.pem") }
+	end
+else
+	file Chef::Config[:validation_key] do
+		action :delete
+		backup false
+		only_if { ::File.exists?(Chef::Config[:client_key]) }
+	end
 end
 
 template "/etc/chef/client.rb" do
