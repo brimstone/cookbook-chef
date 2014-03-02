@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Backup using https://github.com/mdxp/knife-backup
+*/5	*	*	*	*	root	knife backup export -D /var/backups
+# run any other chef things
+*/30	*	*	*	*	root	chef-client

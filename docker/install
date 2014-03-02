@@ -1,0 +1,22 @@
+#!/bin/bash
+
+cd /tmp/chef/docker
+# copy backup script
+cp chef_server_backup.rb /root/;
+# copy backup cronjob
+cp backup /etc/cron.d/backup;
+# copy onboot upstart task
+cp onboot.conf /etc/init/
+# copy in knife config
+cp knife.rb /root/.chef
+# copy client config
+cp client.rb /etc/chef
+
+# remove all of temp
+rm -rf /tmp
+# rebuild temp
+mkdir /tmp
+# set permissions on /tmp
+chmod 777 /tmp
+# clean up all apt-get files
+apt-get clean
