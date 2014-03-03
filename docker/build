@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# install the things we need for now and later
+apt-get install -y curl cron
+
+# install chef
+curl -L https://www.opscode.com/chef/install.sh | bash
+
+# fix up our kernel max shared memory so postgres will start
+echo "kernel.shmmax = 268435456" >> /etc/sysctl.conf
+
 # override our hostname as docker hostnames change CONSTANTLY
 mkdir /etc/chef-server
 echo "api_fqdn	'chef-server'" > /etc/chef-server/chef-server.rb
