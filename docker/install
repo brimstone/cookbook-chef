@@ -1,8 +1,6 @@
 #!/bin/bash
 
 cd /tmp/chef/docker
-# copy backup script
-cp chef_server_backup.rb /root/;
 # copy backup cronjob
 cp backup /etc/cron.d/backup;
 # copy onboot upstart task
