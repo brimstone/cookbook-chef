@@ -1,6 +1,8 @@
 # Some bits stolen from https://github.com/opscode-cookbooks/chef-client
 ## setup
 if Chef::Config[:solo]
+	return if node["boxes"]["chef"].nil?
+	return if node["boxes"]["chef"]["ip"].nil?
 	server = "https://" + node["boxes"]["chef"]["ip"]
 else
 	server = Chef::Config[:chef_server_url]
@@ -28,10 +30,11 @@ template "/etc/chef/client.rb" do
 	variables({ :server => server})
 end
 
-template "/etc/chef/first-boot.json" do
-	source "first-boot.json.erb"
-end
-
-template "/etc/cron.d/chef" do
-	source "cron.chef.erb"
+config = node['chef']['client']
+cron "chef" do
+	action :create
+	minute config['minute']
+	hour config['hour']
+	user "root"
+	command "chef-client --no-color"
 end
